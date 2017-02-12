@@ -1,0 +1,212 @@
+
+tem 7.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000f0  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000144  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000144  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000174  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  000001b0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   000005d7  00000000  00000000  000001d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000561  00000000  00000000  000007a7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000278  00000000  00000000  00000d08  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000034  00000000  00000000  00000f80  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002cd  00000000  00000000  00000fb4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000048  00000000  00000000  00001281  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000012c9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 76 00 	jmp	0xec	; 0xec <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#define F_CBU 1000000 UL
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+  6c:	cf 93       	push	r28
+  6e:	df 93       	push	r29
+  70:	1f 92       	push	r1
+  72:	cd b7       	in	r28, 0x3d	; 61
+  74:	de b7       	in	r29, 0x3e	; 62
+	DDRA &=~ (1<<PA1) ;
+  76:	d1 98       	cbi	0x1a, 1	; 26
+	DDRB |= (1<<PB0) | (1<<PB1) ;
+  78:	87 b3       	in	r24, 0x17	; 23
+  7a:	83 60       	ori	r24, 0x03	; 3
+  7c:	87 bb       	out	0x17, r24	; 23
+	volatile uint8_t adc ;
+	 int x = 1;
+	ADCSRA |=(1<<ADEN) ;                    
+  7e:	37 9a       	sbi	0x06, 7	; 6
+	ADCSRA |=(1<<ADPS0)|(1<<ADPS1) ;        
+  80:	86 b1       	in	r24, 0x06	; 6
+  82:	83 60       	ori	r24, 0x03	; 3
+  84:	86 b9       	out	0x06, r24	; 6
+	ADMUX |= (1<<ADLAR) ;
+  86:	3d 9a       	sbi	0x07, 5	; 7
+	ADMUX |=(1<<MUX0) ;                     
+  88:	38 9a       	sbi	0x07, 0	; 7
+	ADCSRA |= (1<<ADSC) ;
+  8a:	36 9a       	sbi	0x06, 6	; 6
+	while (ADCSRA&(1<<ADSC));
+  8c:	36 99       	sbic	0x06, 6	; 6
+  8e:	fe cf       	rjmp	.-4      	; 0x8c <main+0x20>
+	adc=ADCH ;
+  90:	85 b1       	in	r24, 0x05	; 5
+  92:	89 83       	std	Y+1, r24	; 0x01
+  94:	06 c0       	rjmp	.+12     	; 0xa2 <main+0x36>
+	do
+{
+		while (adc>50)
+		{
+			PORTB |= (1<<PB0) ;
+  96:	c0 9a       	sbi	0x18, 0	; 24
+			ADCSRA |= (1<<ADSC) ;
+  98:	36 9a       	sbi	0x06, 6	; 6
+			while (ADCSRA&(1<<ADSC));
+  9a:	36 99       	sbic	0x06, 6	; 6
+  9c:	fe cf       	rjmp	.-4      	; 0x9a <main+0x2e>
+			adc=ADCH ;
+  9e:	85 b1       	in	r24, 0x05	; 5
+  a0:	89 83       	std	Y+1, r24	; 0x01
+	ADCSRA |= (1<<ADSC) ;
+	while (ADCSRA&(1<<ADSC));
+	adc=ADCH ;
+	do
+{
+		while (adc>50)
+  a2:	89 81       	ldd	r24, Y+1	; 0x01
+  a4:	83 33       	cpi	r24, 0x33	; 51
+  a6:	b8 f7       	brcc	.-18     	; 0x96 <main+0x2a>
+			PORTB |= (1<<PB0) ;
+			ADCSRA |= (1<<ADSC) ;
+			while (ADCSRA&(1<<ADSC));
+			adc=ADCH ;
+		}
+		PORTB =0x00;
+  a8:	18 ba       	out	0x18, r1	; 24
+		while(adc<=50&&adc>45)
+  aa:	89 81       	ldd	r24, Y+1	; 0x01
+  ac:	83 33       	cpi	r24, 0x33	; 51
+  ae:	78 f4       	brcc	.+30     	; 0xce <main+0x62>
+  b0:	89 81       	ldd	r24, Y+1	; 0x01
+  b2:	8e 32       	cpi	r24, 0x2E	; 46
+  b4:	60 f0       	brcs	.+24     	; 0xce <main+0x62>
+		{
+		PORTB = 0x00 ;
+  b6:	18 ba       	out	0x18, r1	; 24
+		ADCSRA |= (1<<ADSC) ;
+  b8:	36 9a       	sbi	0x06, 6	; 6
+		while (ADCSRA&(1<<ADSC));
+  ba:	36 99       	sbic	0x06, 6	; 6
+  bc:	fe cf       	rjmp	.-4      	; 0xba <main+0x4e>
+		adc=ADCH ;
+  be:	85 b1       	in	r24, 0x05	; 5
+  c0:	89 83       	std	Y+1, r24	; 0x01
+			ADCSRA |= (1<<ADSC) ;
+			while (ADCSRA&(1<<ADSC));
+			adc=ADCH ;
+		}
+		PORTB =0x00;
+		while(adc<=50&&adc>45)
+  c2:	89 81       	ldd	r24, Y+1	; 0x01
+  c4:	83 33       	cpi	r24, 0x33	; 51
+  c6:	18 f4       	brcc	.+6      	; 0xce <main+0x62>
+  c8:	89 81       	ldd	r24, Y+1	; 0x01
+  ca:	8e 32       	cpi	r24, 0x2E	; 46
+  cc:	a0 f7       	brcc	.-24     	; 0xb6 <main+0x4a>
+		PORTB = 0x00 ;
+		ADCSRA |= (1<<ADSC) ;
+		while (ADCSRA&(1<<ADSC));
+		adc=ADCH ;
+	    }
+	PORTB =0x00;
+  ce:	18 ba       	out	0x18, r1	; 24
+	while (adc<=45)
+  d0:	89 81       	ldd	r24, Y+1	; 0x01
+  d2:	8e 32       	cpi	r24, 0x2E	; 46
+  d4:	48 f4       	brcc	.+18     	; 0xe8 <main+0x7c>
+	{
+		PORTB |= (1<<PINB1) ;
+  d6:	c1 9a       	sbi	0x18, 1	; 24
+		ADCSRA |= (1<<ADSC) ;
+  d8:	36 9a       	sbi	0x06, 6	; 6
+		while (ADCSRA&(1<<ADSC));
+  da:	36 99       	sbic	0x06, 6	; 6
+  dc:	fe cf       	rjmp	.-4      	; 0xda <main+0x6e>
+		adc=ADCH ;
+  de:	85 b1       	in	r24, 0x05	; 5
+  e0:	89 83       	std	Y+1, r24	; 0x01
+		ADCSRA |= (1<<ADSC) ;
+		while (ADCSRA&(1<<ADSC));
+		adc=ADCH ;
+	    }
+	PORTB =0x00;
+	while (adc<=45)
+  e2:	89 81       	ldd	r24, Y+1	; 0x01
+  e4:	8e 32       	cpi	r24, 0x2E	; 46
+  e6:	b8 f3       	brcs	.-18     	; 0xd6 <main+0x6a>
+		PORTB |= (1<<PINB1) ;
+		ADCSRA |= (1<<ADSC) ;
+		while (ADCSRA&(1<<ADSC));
+		adc=ADCH ;
+	}
+	PORTB =0x00;
+  e8:	18 ba       	out	0x18, r1	; 24
+  ea:	db cf       	rjmp	.-74     	; 0xa2 <main+0x36>
+
+000000ec <_exit>:
+  ec:	f8 94       	cli
+
+000000ee <__stop_program>:
+  ee:	ff cf       	rjmp	.-2      	; 0xee <__stop_program>
